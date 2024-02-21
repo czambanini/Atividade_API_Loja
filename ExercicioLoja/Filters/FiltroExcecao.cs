@@ -7,6 +7,12 @@ namespace ExercicioLoja.Filters
     public class FiltroExcecao : IExceptionFilter
     {
 
+        private readonly ILogger<FiltroExcecao> _logger;
+        public FiltroExcecao(ILogger<FiltroExcecao> logger)
+        {
+            _logger = logger;
+        }
+
         public void OnException(ExceptionContext context)
         {
             if (context.Exception is CustomException lojaApiException)
@@ -36,6 +42,8 @@ namespace ExercicioLoja.Filters
                 {
                     StatusCode = errorResult.StatusCode
                 };
+
+                _logger.LogError("Uma exceção foi identificada no filtro de exceção");
             }
 
         }

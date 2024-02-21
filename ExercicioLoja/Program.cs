@@ -16,6 +16,7 @@ namespace ExercicioLoja
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add<FiltroExcecao>();
+                options.Filters.Add<FiltroLogAcoes>();
             });
 
 

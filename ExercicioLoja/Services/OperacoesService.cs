@@ -2,21 +2,26 @@
 using ExercicioLoja.Repository;
 using System.Diagnostics.Eventing.Reader;
 using ExercicioLoja.CustomExceptions;
+using ExercicioLoja.Filters;
 
 namespace ExercicioLoja.Services
 {
     public class OperacoesService : IOperacoesService
     {
         private IEstoque _produtos;
-        public OperacoesService(IEstoque estoque)
+        private readonly ILogger<FiltroExcecao> _logger;
+
+        public OperacoesService(IEstoque estoque, ILogger<FiltroExcecao> logger)
         {
             _produtos = estoque;
+            _logger = logger;
         }
 
         public List<Produto> ValidarListaDeProdutos(List<int> idProdutos)
         {
             if (idProdutos.Count == 0)
             {
+                _logger.LogError("Falha na operação. Lista de produtos está vazia");
                 throw new CustomException("Lista de produtos está vázia", 404);
             }
 
@@ -26,9 +31,15 @@ namespace ExercicioLoja.Services
             {
                 var produto = _produtos.GetById(id);
                 if (produto is not null) produtos.Add(produto);
-                else throw new CustomException("Id passado não corresponde a um produto", 404);
+                else
+                {
+                    _logger.LogError("Falha na operação. Id passado não corresponde a um produto");
+                    throw new CustomException("Id passado não corresponde a um produto", 404);
+                }
+
             }
 
+            _logger.LogInformation("Validação da lista de produtos feita com sucesso");
             return produtos;
 
         }
