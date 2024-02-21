@@ -2,6 +2,7 @@
 using ExercicioLoja.Filters;
 using ExercicioLoja.Repository;
 using ExercicioLoja.Services;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace ExercicioLoja
 {
@@ -16,6 +17,7 @@ namespace ExercicioLoja
             {
                 options.Filters.Add<FiltroExcecao>();
             });
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -40,6 +42,10 @@ namespace ExercicioLoja
 
             app.UseAuthorization();
 
+            app.UseCors(policyBuilder =>
+            {
+                policyBuilder.WithOrigins("http://localhost:55");
+            }); 
 
             app.MapControllers();
 
